@@ -1,6 +1,7 @@
 import { GraphQLClient, ClientError } from 'graphql-request';
 import type { Config } from '../config.js';
 import type { LiquidityOrderInput, BuyLiquidityResponse } from '../types/magma.js';
+import packageJson from '../../package.json' with { type: 'json' };
 
 /**
  * Error categories for better error handling
@@ -50,7 +51,9 @@ export class MagmaGraphQLClient {
 
     // Build headers - only add Authorization if API key is provided
     const headers: Record<string, string> = {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'apollographql-client-name': 'magma-mcp',
+      'apollographql-client-version': packageJson.version
     };
 
     if (config.magmaApiKey) {
