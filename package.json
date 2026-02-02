@@ -1,0 +1,70 @@
+{
+  "name": "@ambosstech/magma-mcp",
+  "version": "1.0.0",
+  "description": "MCP server for buying Lightning Network liquidity via Amboss Magma",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "magma-mcp": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/amboss-tech/magma-mcp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/amboss-tech/magma-mcp/issues"
+  },
+  "homepage": "https://github.com/amboss-tech/magma-mcp#readme",
+  "scripts": {
+    "build": "tsc && chmod +x dist/index.js",
+    "dev": "tsx src/index.ts",
+    "start": "node dist/index.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "typecheck": "tsc --noEmit",
+    "inspector": "npx @modelcontextprotocol/inspector dist/index.js",
+    "prepublishOnly": "npm run typecheck && npm test && npm run build",
+    "preversion": "npm run typecheck && npm test",
+    "postversion": "git push && git push --tags"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "lightning-network",
+    "bitcoin",
+    "amboss",
+    "magma",
+    "liquidity",
+    "lightning",
+    "ln",
+    "btc"
+  ],
+  "author": "Amboss Technologies",
+  "license": "MIT",
+  "packageManager": "pnpm@10.5.2",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.25.3",
+    "dotenv": "16.4.5",
+    "graphql": "^16.12.0",
+    "graphql-request": "^7.4.0",
+    "zod": "^4.3.6",
+    "zod-to-json-schema": "^3.25.1"
+  },
+  "devDependencies": {
+    "@types/node": "^25.2.0",
+    "@vitest/coverage-v8": "^4.0.18",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18"
+  }
+}
