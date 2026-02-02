@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js';
 import { MagmaGraphQLClient, ErrorCategory, type MagmaClientError } from '../graphql-client.js';
 import { validateBuyLiquidityInput } from '../schemas/buy-liquidity-schema.js';
 import type { LiquidityOrderInput, BuyLiquidityResult, MagmaError } from '../../types/magma.js';
@@ -13,7 +14,7 @@ import type { LiquidityOrderInput, BuyLiquidityResult, MagmaError } from '../../
 export async function handleBuyLiquidity(
   client: MagmaGraphQLClient,
   args: unknown
-): Promise<{ content: Array<{ type: string; text: string }>; isError?: boolean }> {
+): Promise<CallToolResult> {
   try {
     // Phase 1: Validate input
     const validatedInput = validateBuyLiquidityInput(args);
@@ -43,7 +44,7 @@ export async function handleBuyLiquidity(
     // Return formatted success response
     return {
       content: [{
-        type: "text",
+        type: "text" as const,
         text: JSON.stringify(result, null, 2)
       }]
     };
@@ -63,7 +64,7 @@ export async function handleBuyLiquidity(
 
       return {
         content: [{
-          type: "text",
+          type: "text" as const,
           text: JSON.stringify(validationError, null, 2)
         }],
         isError: true
@@ -80,7 +81,7 @@ export async function handleBuyLiquidity(
 
       return {
         content: [{
-          type: "text",
+          type: "text" as const,
           text: JSON.stringify(magmaError, null, 2)
         }],
         isError: true
@@ -95,7 +96,7 @@ export async function handleBuyLiquidity(
 
     return {
       content: [{
-        type: "text",
+        type: "text" as const,
         text: JSON.stringify(unknownError, null, 2)
       }],
       isError: true
