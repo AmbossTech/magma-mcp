@@ -69,6 +69,8 @@ describe('MagmaGraphQLClient', () => {
         {
           headers: {
             'Content-Type': 'application/json',
+            'apollographql-client-name': 'magma-mcp',
+            'apollographql-client-version': expect.any(String),
             'Authorization': 'Bearer test-api-key'
           }
         }
@@ -88,7 +90,9 @@ describe('MagmaGraphQLClient', () => {
         mockConfig.magmaEndpoint,
         {
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'apollographql-client-name': 'magma-mcp',
+            'apollographql-client-version': expect.any(String)
           }
         }
       );
@@ -426,12 +430,18 @@ describe('MagmaGraphQLClient', () => {
         { query: '' }
       );
 
-      mockRequest.mockRejectedValue(error);
+      // Use mockRejectedValueOnce for each retry to avoid unhandled rejections
+      mockRequest
+        .mockRejectedValueOnce(error)
+        .mockRejectedValueOnce(error)
+        .mockRejectedValueOnce(error);
 
       const resultPromise = client.buyLiquidity(mockInput);
+      // Suppress unhandled rejection warning - we'll check the error below
+      resultPromise.catch(() => {});
 
-      await vi.advanceTimersByTimeAsync(1000);
-      await vi.advanceTimersByTimeAsync(2000);
+      // Run all timers to completion
+      await vi.runAllTimersAsync();
 
       await expect(resultPromise).rejects.toMatchObject({
         category: ErrorCategory.SERVER_ERROR
