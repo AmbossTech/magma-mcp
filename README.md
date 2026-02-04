@@ -473,7 +473,6 @@ MIT License - see [LICENSE](LICENSE) file for details.
 ## Support
 
 - **Issues:** [GitHub Issues](https://github.com/AmbossTech/magma-mcp/issues)
-- **Amboss Discord:** [Join Discord](https://discord.gg/amboss)
 - **Documentation:** [Amboss Docs](https://docs.amboss.tech/)
 
 ---
