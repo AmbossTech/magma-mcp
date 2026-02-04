@@ -15,12 +15,12 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/amboss-tech/magma-mcp.git"
+    "url": "git+https://github.com/AmbossTech/magma-mcp.git"
   },
   "bugs": {
-    "url": "https://github.com/amboss-tech/magma-mcp/issues"
+    "url": "https://github.com/AmbossTech/magma-mcp/issues"
   },
-  "homepage": "https://github.com/amboss-tech/magma-mcp#readme",
+  "homepage": "https://github.com/AmbossTech/magma-mcp#readme",
   "scripts": {
     "build": "tsc && chmod +x dist/server.js",
     "dev": "tsx src/server.ts",
