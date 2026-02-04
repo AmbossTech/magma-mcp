@@ -1,6 +1,6 @@
 {
   "name": "@ambosstech/magma-mcp",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Node.js client library and MCP server to buy Lightning Network liquidity through Amboss Magma",
   "type": "module",
   "main": "./dist/index.js",
