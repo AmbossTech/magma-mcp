@@ -1,10 +1,15 @@
-# Magma MCP Server
+# Magma MCP
 
-Model Context Protocol (MCP) server for buying Lightning Network liquidity via [Amboss Magma](https://magma.amboss.tech/).
+Node.js client library and Model Context Protocol (MCP) server for buying Lightning Network liquidity via [Amboss Magma](https://magma.amboss.tech/).
 
 ## Overview
 
-This MCP server enables AI assistants like Claude to purchase inbound Lightning Network liquidity for your node through the Amboss Magma API. It provides a seamless way to increase your node's receiving capacity directly from conversations with Claude.
+This package provides two ways to interact with the Amboss Magma API:
+
+1. **Node.js Client Library**: Programmatically buy Lightning liquidity from your Node.js applications
+2. **MCP Server**: Enable AI assistants like Claude to purchase inbound Lightning Network liquidity for your node
+
+Both interfaces provide a seamless way to increase your node's receiving capacity through the Amboss Magma API.
 
 ## Features
 
@@ -111,7 +116,7 @@ Add the following configuration to your Claude Desktop config file:
   "mcpServers": {
     "magma": {
       "command": "node",
-      "args": ["/absolute/path/to/magma-mcp/dist/index.js"],
+      "args": ["/absolute/path/to/magma-mcp/dist/server.js"],
       "env": {
         "MAGMA_API_KEY": "your_api_key_here"
       }
@@ -169,6 +174,155 @@ Buy $25 of private channel liquidity for my node 024ae5a5f0b0185...@12.34.56.78:
 ```
 
 The Lightning invoice can be paid using any Lightning wallet to complete the liquidity purchase.
+
+## Using as a Node.js Library
+
+In addition to the MCP server, this package can be used as a Node.js client library to programmatically interact with the Amboss Magma API.
+
+### Installation
+
+```bash
+npm install @ambosstech/magma-mcp
+```
+
+### Quick Start
+
+```typescript
+import { MagmaClient } from '@ambosstech/magma-mcp';
+
+// Create client (anonymous access)
+const client = new MagmaClient();
+
+// Or with API key
+const client = new MagmaClient({
+  apiKey: process.env.MAGMA_API_KEY
+});
+
+// Buy liquidity
+const invoice = await client.buyLiquidity({
+  connectionUri: '024ae5a5f0b01850983009489ca89c85...@12.34.56.78:9735',
+  usdCents: 1000  // $10.00
+});
+
+console.log('Pay this Lightning invoice:', invoice);
+```
+
+### API Reference
+
+#### `MagmaClient`
+
+**Constructor:**
+
+```typescript
+new MagmaClient(config?: MagmaClientConfig)
+```
+
+**Config options:**
+- `apiKey?: string` - Your Amboss Magma API key (optional, supports anonymous access)
+- `endpoint?: string` - GraphQL endpoint (default: `https://magma.amboss.tech/graphql`)
+- `logLevel?: 'debug' | 'info' | 'error'` - Logging level (default: `error`)
+
+**Methods:**
+
+##### `buyLiquidity(options: BuyLiquidityOptions): Promise<string>`
+
+Purchase inbound Lightning Network liquidity for a node.
+
+**Options:**
+- `connectionUri: string` - Node connection string (pubkey or pubkey@host:port)
+- `usdCents: number` - Amount in cents (minimum 500 = $5.00)
+- `redirectUrl?: string` - Optional post-payment redirect URL
+- `privateChannel?: boolean` - Create private channel (default: false)
+- `railsClusterOnly?: boolean` - Source only from Rails cluster (default: false)
+
+**Returns:** Lightning invoice string to complete the payment
+
+**Throws:** `MagmaClientError` on API or network errors
+
+### Examples
+
+**Basic purchase:**
+```typescript
+import { MagmaClient } from '@ambosstech/magma-mcp';
+
+const client = new MagmaClient();
+
+const invoice = await client.buyLiquidity({
+  connectionUri: '024ae5a5f0b01850983009489ca89c85...',
+  usdCents: 500  // $5.00 minimum
+});
+
+console.log('Invoice:', invoice);
+```
+
+**With all options:**
+```typescript
+const invoice = await client.buyLiquidity({
+  connectionUri: '024ae5a5f0b01850983009489ca89c85...@12.34.56.78:9735',
+  usdCents: 5000,  // $50.00
+  redirectUrl: 'https://myapp.com/payment-complete',
+  privateChannel: true,
+  railsClusterOnly: true
+});
+```
+
+**Error handling:**
+```typescript
+import { MagmaClient, ErrorCategory } from '@ambosstech/magma-mcp';
+
+const client = new MagmaClient();
+
+try {
+  const invoice = await client.buyLiquidity({
+    connectionUri: '024ae5a5f0b01850983009489ca89c85...',
+    usdCents: 1000
+  });
+  console.log('Success:', invoice);
+} catch (error) {
+  if (error.category === ErrorCategory.NETWORK_ERROR) {
+    console.error('Network issue, please retry');
+  } else if (error.category === ErrorCategory.CLIENT_ERROR) {
+    console.error('Invalid request:', error.message);
+  } else {
+    console.error('Unexpected error:', error);
+  }
+}
+```
+
+**TypeScript types:**
+```typescript
+import type {
+  MagmaClientConfig,
+  BuyLiquidityOptions,
+  LiquidityOrderInput,
+  BuyLiquidityResponse
+} from '@ambosstech/magma-mcp';
+```
+
+### Advanced Usage
+
+For advanced use cases, you can access the low-level GraphQL client:
+
+```typescript
+import { MagmaGraphQLClient } from '@ambosstech/magma-mcp';
+
+const client = new MagmaGraphQLClient({
+  magmaApiKey: 'your-api-key',
+  magmaEndpoint: 'https://magma.amboss.tech/graphql',
+  logLevel: 'debug'
+});
+
+const response = await client.buyLiquidity({
+  connection_uri: '024ae5a5f0b01850983009489ca89c85...',
+  usd_cents: '1000',
+  options: {
+    private: true
+  }
+});
+
+// Full response structure
+console.log(response.liquidity.buy.payment.lightning_invoice);
+```
 
 ## Development
 

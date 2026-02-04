@@ -1,12 +1,12 @@
 {
   "name": "@ambosstech/magma-mcp",
-  "version": "0.0.1",
-  "description": "MCP server to buy Lightning Network liquidity through Amboss Magma",
+  "version": "0.0.2",
+  "description": "Node.js client library and MCP server to buy Lightning Network liquidity through Amboss Magma",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "bin": {
-    "magma-mcp": "dist/index.js"
+    "magma-mcp": "dist/server.js"
   },
   "files": [
     "dist",
@@ -22,14 +22,14 @@
   },
   "homepage": "https://github.com/amboss-tech/magma-mcp#readme",
   "scripts": {
-    "build": "tsc && chmod +x dist/index.js",
-    "dev": "tsx src/index.ts",
-    "start": "node dist/index.js",
+    "build": "tsc && chmod +x dist/server.js",
+    "dev": "tsx src/server.ts",
+    "start": "node dist/server.js",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "typecheck": "tsc --noEmit",
-    "inspector": "npx @modelcontextprotocol/inspector dist/index.js",
+    "inspector": "npx @modelcontextprotocol/inspector dist/server.js",
     "prepublishOnly": "npm run typecheck && npm test && npm run build",
     "preversion": "npm run typecheck && npm test",
     "postversion": "git push && git push --tags"
@@ -44,7 +44,10 @@
     "liquidity",
     "lightning",
     "ln",
-    "btc"
+    "btc",
+    "client",
+    "api",
+    "nodejs"
   ],
   "author": "Amboss Technologies",
   "license": "MIT",
