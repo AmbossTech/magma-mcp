@@ -1,6 +1,6 @@
 /**
  * TypeScript types for Magma GraphQL API
- * Based on https://docs.amboss.tech/tutorials/how_to_buy_liquidity_using_magma
+ * Based on https://docs.amboss.tech/magma/buy-liquidity
  */
 
 /**
@@ -44,12 +44,20 @@ export interface MagmaOrder {
 
 /**
  * Payment information for completing the liquidity purchase
+ *
+ * Both fields are nullable in the GraphQL schema. Amboss Payments returns a
+ * raw BOLT11 invoice and has no hosted checkout page, so `lightning_invoice`
+ * is the field to use.
  */
 export interface MagmaPayment {
-  /** BTCPay checkout URL for payment */
-  redirect_url: string;
-  /** Lightning invoice for payment */
-  lightning_invoice: string;
+  /**
+   * Always `null` for orders paid through Amboss Payments, which is every
+   * order today. It was only ever set for the retired BTCPay checkout page.
+   * The `buy_lightning_liquidity` tool does not surface it.
+   */
+  redirect_url?: string | null;
+  /** BOLT11 invoice to pay. Nullable in the schema, always set in practice. */
+  lightning_invoice?: string | null;
 }
 
 /**
