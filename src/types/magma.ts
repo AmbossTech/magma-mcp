@@ -46,7 +46,7 @@ export interface MagmaOrder {
  * Payment information for completing the liquidity purchase
  */
 export interface MagmaPayment {
-  /** BTCPay checkout URL for payment */
+  /** Nullable. A `lightning:<invoice>` URI for the current payment method, or a hosted checkout URL for legacy/fallback orders */
   redirect_url: string;
   /** Lightning invoice for payment */
   lightning_invoice: string;
