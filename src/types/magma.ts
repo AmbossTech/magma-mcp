@@ -1,6 +1,6 @@
 /**
  * TypeScript types for Magma GraphQL API
- * Based on https://docs.amboss.tech/tutorials/how_to_buy_liquidity_using_magma
+ * Based on https://docs.amboss.tech/magma/buy-liquidity
  */
 
 /**
@@ -46,7 +46,7 @@ export interface MagmaOrder {
  * Payment information for completing the liquidity purchase
  */
 export interface MagmaPayment {
-  /** Nullable. A `lightning:<invoice>` URI for the current payment method, or a hosted checkout URL for legacy/fallback orders */
+  /** A `lightning:<invoice>` URI for the current payment method, or a hosted checkout URL for legacy/fallback orders */
   redirect_url: string;
   /** Lightning invoice for payment */
   lightning_invoice: string;
