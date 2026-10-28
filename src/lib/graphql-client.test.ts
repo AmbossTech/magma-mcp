@@ -35,10 +35,12 @@ describe('MagmaGraphQLClient', () => {
   };
 
   const mockSuccessResponse: BuyLiquidityResponse = {
-    liquidity: {
-      buy: {
-        payment: {
-          lightning_invoice: 'lnbc10m1p3j8z9xpp5qqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqypq...'
+    account: {
+      liquidity: {
+        buy: {
+          payment: {
+            lightning_invoice: 'lnbc10m1p3j8z9xpp5qqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqqqsyqcyq5rqwzqfqypq...'
+          }
         }
       }
     }
@@ -72,27 +74,6 @@ describe('MagmaGraphQLClient', () => {
             'apollographql-client-name': 'magma-mcp',
             'apollographql-client-version': expect.any(String),
             'Authorization': 'Bearer test-api-key'
-          }
-        }
-      );
-    });
-
-    it('should initialize without Authorization header when API key is not provided', () => {
-      vi.clearAllMocks();
-      const configWithoutKey: Config = {
-        ...mockConfig,
-        magmaApiKey: undefined
-      };
-
-      new MagmaGraphQLClient(configWithoutKey);
-
-      expect(GraphQLClient).toHaveBeenCalledWith(
-        mockConfig.magmaEndpoint,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'apollographql-client-name': 'magma-mcp',
-            'apollographql-client-version': expect.any(String)
           }
         }
       );
@@ -260,6 +241,25 @@ describe('MagmaGraphQLClient', () => {
         category: ErrorCategory.CLIENT_ERROR,
         message: expect.stringContaining('Invalid connection_uri format'),
         statusCode: 400
+      });
+    });
+
+    it('should pass GraphQL error messages through, e.g. Terms not accepted', async () => {
+      const message = 'Accept the Amboss Terms of Service and Privacy Policy before ordering';
+      const error = new ClientError(
+        {
+          status: 200,
+          errors: [{ message }]
+        } as any,
+        { query: '' }
+      );
+
+      mockRequest.mockRejectedValueOnce(error);
+
+      await expect(client.buyLiquidity(mockInput)).rejects.toMatchObject({
+        category: ErrorCategory.CLIENT_ERROR,
+        message,
+        statusCode: 200
       });
     });
 
@@ -484,6 +484,7 @@ describe('MagmaGraphQLClient', () => {
       expect(mutation).toBeDefined();
       expect(mutation).toContain('mutation BuyLiquidity');
       expect(mutation).toContain('$input: LiquidityOrderInput!');
+      expect(mutation).toContain('account');
       expect(mutation).toContain('liquidity');
       expect(mutation).toContain('buy(input: $input)');
       expect(mutation).toContain('payment');

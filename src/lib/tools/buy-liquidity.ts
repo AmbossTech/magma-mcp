@@ -33,7 +33,7 @@ export async function handleBuyLiquidity(
     // Phase 3: Execute GraphQL mutation
     const response = await client.buyLiquidity(orderInput);
 
-    const {buy} = response.liquidity
+    const { buy } = response.account.liquidity;
 
     // Phase 4: Transform response to MCP format
     const result: BuyLiquidityResult = {

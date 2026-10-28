@@ -36,10 +36,12 @@ export class MagmaGraphQLClient {
    */
   private readonly BUY_LIQUIDITY_MUTATION = `
     mutation BuyLiquidity($input: LiquidityOrderInput!) {
-      liquidity {
-        buy(input: $input) {
-          payment {
-            lightning_invoice
+      account {
+        liquidity {
+          buy(input: $input) {
+            payment {
+              lightning_invoice
+            }
           }
         }
       }
@@ -49,19 +51,12 @@ export class MagmaGraphQLClient {
   constructor(config: Config) {
     this.config = config;
 
-    // Build headers - only add Authorization if API key is provided
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
+      'Authorization': `Bearer ${config.magmaApiKey}`,
       'apollographql-client-name': 'magma-mcp',
       'apollographql-client-version': packageJson.version
     };
-
-    if (config.magmaApiKey) {
-      headers['Authorization'] = `Bearer ${config.magmaApiKey}`;
-      console.error(`[${config.logLevel.toUpperCase()}] GraphQL client initialized with API key`);
-    } else {
-      console.error(`[${config.logLevel.toUpperCase()}] GraphQL client initialized with anonymous access`);
-    }
 
     this.client = new GraphQLClient(config.magmaEndpoint, { headers });
   }
@@ -93,7 +88,7 @@ export class MagmaGraphQLClient {
         console.error(`[DEBUG] Response: ${JSON.stringify(response, null, 2)}`);
       }
 
-      const { buy } = response.liquidity;
+      const { buy } = response.account.liquidity;
 
       if (this.config.logLevel === 'debug' || this.config.logLevel === 'info') {
         console.error(`[INFO] Liquidity purchase successful. Lightning invoice: ${buy.payment.lightning_invoice.substring(0, 50)}...`);
@@ -159,6 +154,18 @@ export class MagmaGraphQLClient {
     // GraphQL client errors (4xx, 5xx responses)
     if (error instanceof ClientError) {
       const statusCode = error.response.status;
+      const graphqlMessage = error.response.errors?.[0]?.message;
+
+      // GraphQL errors come back with a 200, e.g. when the account has not
+      // accepted the Terms. Their message tells the user what to do.
+      if (statusCode < 400 && graphqlMessage) {
+        return {
+          category: ErrorCategory.CLIENT_ERROR,
+          message: graphqlMessage,
+          statusCode,
+          originalError: error
+        };
+      }
 
       if (statusCode >= 400 && statusCode < 500) {
         return {
@@ -206,7 +213,7 @@ export class MagmaGraphQLClient {
   private getClientErrorMessage(statusCode: number, error: ClientError): string {
     switch (statusCode) {
       case 401:
-        return 'Authentication failed. If using an API key, please check your MAGMA_API_KEY. Otherwise, anonymous access should work automatically.';
+        return 'Authentication failed. Please check your MAGMA_API_KEY at https://account.amboss.tech/settings/api-keys.';
       case 403:
         return 'Access forbidden. Your API key may not have the required permissions.';
       case 404:

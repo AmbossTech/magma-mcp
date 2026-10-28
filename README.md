@@ -14,8 +14,7 @@ Both interfaces provide a seamless way to increase your node's receiving capacit
 ## Features
 
 - **Buy Lightning Liquidity**: Purchase inbound liquidity for your Lightning node
-- **Anonymous Access**: Works without an API key - the Magma API creates temporary accounts automatically
-- **Optional Authentication**: Use your Amboss account API key for personalized access
+- **Your Amboss account**: Buys with your API key, so every order is on your account
 - **Input Validation**: Comprehensive validation of all parameters
 - **Error Handling**: Clear, user-friendly error messages
 - **Retry Logic**: Automatic retry for transient network failures
@@ -25,7 +24,7 @@ Both interfaces provide a seamless way to increase your node's receiving capacit
 - Node.js >= 18.0.0
 - pnpm (or npm/yarn)
 - A Lightning Network node with accessible connection URI
-- (Optional) Amboss Magma API key ([Get one here](https://account.amboss.tech/settings/api-keys))
+- An Amboss API key ([get one here](https://account.amboss.tech/settings/api-keys)) from an account that has accepted the Amboss [Terms of Service](https://amboss.tech/terms) and [Privacy Policy](https://amboss.tech/privacy). Log in at [magma.amboss.tech/settings/account](https://magma.amboss.tech/settings/account) to accept them once.
 
 ## Installation
 
@@ -50,11 +49,9 @@ pnpm install
 pnpm build
 ```
 
-### Configure environment variables (Optional)
+### Configure environment variables
 
-The Magma API supports **anonymous access** - you can use the server without an API key! The API will automatically create temporary accounts with session keys.
-
-If you want to use your existing Amboss account, create a `.env` file:
+Magma only takes orders from logged-in accounts that have accepted the Terms of Service and Privacy Policy, so an API key is required. Create a `.env` file:
 
 ```bash
 cp .env.example .env
@@ -72,7 +69,7 @@ MAGMA_API_KEY=your_api_key_here
 
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
-| `MAGMA_API_KEY` | No | - | Your Amboss Magma API key (optional - supports anonymous access) |
+| `MAGMA_API_KEY` | Yes | - | Amboss API key of an account that has accepted the Terms of Service and Privacy Policy |
 | `MAGMA_GRAPHQL_ENDPOINT` | No | `https://magma.amboss.tech/graphql` | Magma GraphQL endpoint |
 | `LOG_LEVEL` | No | `info` | Logging level (debug, info, warn, error) |
 
@@ -83,19 +80,7 @@ Add the following configuration to your Claude Desktop config file:
 **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
 **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
 
-**Option 1: Using npm package (anonymous access)**
-```json
-{
-  "mcpServers": {
-    "magma": {
-      "command": "npx",
-      "args": ["-y", "@ambosstech/magma-mcp"]
-    }
-  }
-}
-```
-
-**Option 2: Using npm package (with API key)**
+**Option 1: Using npm package**
 ```json
 {
   "mcpServers": {
@@ -110,7 +95,7 @@ Add the following configuration to your Claude Desktop config file:
 }
 ```
 
-**Option 3: From source (development)**
+**Option 2: From source (development)**
 ```json
 {
   "mcpServers": {
@@ -190,10 +175,6 @@ npm install @ambosstech/magma-mcp
 ```typescript
 import { MagmaClient } from '@ambosstech/magma-mcp';
 
-// Create client (anonymous access)
-const client = new MagmaClient();
-
-// Or with API key
 const client = new MagmaClient({
   apiKey: process.env.MAGMA_API_KEY
 });
@@ -214,11 +195,11 @@ console.log('Pay this Lightning invoice:', invoice);
 **Constructor:**
 
 ```typescript
-new MagmaClient(config?: MagmaClientConfig)
+new MagmaClient(config: MagmaClientConfig)
 ```
 
 **Config options:**
-- `apiKey?: string` - Your Amboss Magma API key (optional, supports anonymous access)
+- `apiKey: string` - Amboss API key of an account that has accepted the Terms of Service and Privacy Policy
 - `endpoint?: string` - GraphQL endpoint (default: `https://magma.amboss.tech/graphql`)
 - `logLevel?: 'debug' | 'info' | 'error'` - Logging level (default: `error`)
 
@@ -394,13 +375,18 @@ ls -la dist/
 
 ### Authentication errors
 
-**Error:** `Authentication failed. Please check your MAGMA_API_KEY.`
+**Error:** `Authentication failed. Please check your MAGMA_API_KEY ...`
 
 **Solution:**
-1. If using an API key, verify it at https://account.amboss.tech/settings/api-keys
+1. Verify the key at https://account.amboss.tech/settings/api-keys
 2. Ensure the key is correctly set in your `.env` file or Claude config
 3. Check for extra spaces or quotes around the API key
-4. Alternatively, remove the API key to use anonymous access (the API will create a temporary account automatically)
+
+### Terms not accepted
+
+**Error:** `Accept the Amboss Terms of Service ... and Privacy Policy ... before ordering ...`
+
+**Solution:** log in at https://magma.amboss.tech/settings/account with the account that owns the API key and accept them once. Then try again.
 
 ### Connection URI validation errors
 
