@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 
 const MISSING_API_KEY_MESSAGE =
   'MAGMA_API_KEY is required. Use an API key from an Amboss account that ' +
-  'has accepted the Terms of Service and Privacy Policy at ' +
+  'has accepted the Terms of Service at ' +
   'https://magma.amboss.tech/settings/account. Create keys at ' +
   'https://account.amboss.tech/settings/api-keys.';
 

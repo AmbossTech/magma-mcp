@@ -24,7 +24,7 @@ Both interfaces provide a seamless way to increase your node's receiving capacit
 - Node.js >= 18.0.0
 - pnpm (or npm/yarn)
 - A Lightning Network node with accessible connection URI
-- An Amboss API key ([get one here](https://account.amboss.tech/settings/api-keys)) from an account that has accepted the Amboss [Terms of Service](https://amboss.tech/terms) and [Privacy Policy](https://amboss.tech/privacy). Log in at [magma.amboss.tech/settings/account](https://magma.amboss.tech/settings/account) to accept them once.
+- An Amboss API key ([get one here](https://account.amboss.tech/settings/api-keys)) from an account that has accepted the Amboss [Terms of Service](https://amboss.tech/terms). Log in at [magma.amboss.tech/settings/account](https://magma.amboss.tech/settings/account) to accept them once.
 
 ## Installation
 
@@ -51,7 +51,7 @@ pnpm build
 
 ### Configure environment variables
 
-Magma only takes orders from logged-in accounts that have accepted the Terms of Service and Privacy Policy, so an API key is required. Create a `.env` file:
+Magma only takes orders from logged-in accounts that have accepted the Terms of Service, so an API key is required. Create a `.env` file:
 
 ```bash
 cp .env.example .env
@@ -69,7 +69,7 @@ MAGMA_API_KEY=your_api_key_here
 
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
-| `MAGMA_API_KEY` | Yes | - | Amboss API key of an account that has accepted the Terms of Service and Privacy Policy |
+| `MAGMA_API_KEY` | Yes | - | Amboss API key of an account that has accepted the Terms of Service |
 | `MAGMA_GRAPHQL_ENDPOINT` | No | `https://magma.amboss.tech/graphql` | Magma GraphQL endpoint |
 | `LOG_LEVEL` | No | `info` | Logging level (debug, info, warn, error) |
 
@@ -199,7 +199,7 @@ new MagmaClient(config: MagmaClientConfig)
 ```
 
 **Config options:**
-- `apiKey: string` - Amboss API key of an account that has accepted the Terms of Service and Privacy Policy
+- `apiKey: string` - Amboss API key of an account that has accepted the Terms of Service
 - `endpoint?: string` - GraphQL endpoint (default: `https://magma.amboss.tech/graphql`)
 - `logLevel?: 'debug' | 'info' | 'error'` - Logging level (default: `error`)
 
@@ -384,7 +384,7 @@ ls -la dist/
 
 ### Terms not accepted
 
-**Error:** `Accept the Amboss Terms of Service ... and Privacy Policy ... before ordering ...`
+**Error:** `Accept the Amboss Terms of Service ... before ordering ...`
 
 **Solution:** log in at https://magma.amboss.tech/settings/account with the account that owns the API key and accept them once. Then try again.
 

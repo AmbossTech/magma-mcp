@@ -245,7 +245,7 @@ describe('MagmaGraphQLClient', () => {
     });
 
     it('should pass GraphQL error messages through, e.g. Terms not accepted', async () => {
-      const message = 'Accept the Amboss Terms of Service and Privacy Policy before ordering';
+      const message = 'Accept the Amboss Terms of Service before ordering';
       const error = new ClientError(
         {
           status: 200,

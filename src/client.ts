@@ -11,8 +11,8 @@ import type { Config } from './config.js';
  */
 export interface MagmaClientConfig {
   /**
-   * Amboss API key of an account that has accepted the Terms of Service and
-   * Privacy Policy at https://magma.amboss.tech/settings/account
+   * Amboss API key of an account that has accepted the Terms of Service at
+   * https://magma.amboss.tech/settings/account
    */
   apiKey: string;
   /** GraphQL endpoint URL (defaults to production) */
