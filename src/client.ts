@@ -10,8 +10,11 @@ import type { Config } from './config.js';
  * Configuration options for MagmaClient
  */
 export interface MagmaClientConfig {
-  /** Amboss Magma API key (optional for anonymous access) */
-  apiKey?: string;
+  /**
+   * Amboss API key of an account that has accepted the Terms of Service at
+   * https://magma.amboss.tech/settings/account
+   */
+  apiKey: string;
   /** GraphQL endpoint URL (defaults to production) */
   endpoint?: string;
   /** Logging level for client operations */
@@ -61,12 +64,12 @@ export class MagmaClient {
    *
    * @param config - Optional configuration for the client
    */
-  constructor(config?: MagmaClientConfig) {
+  constructor(config: MagmaClientConfig) {
     // Build Config object with defaults
     const fullConfig: Config = {
-      magmaApiKey: config?.apiKey,
-      magmaEndpoint: config?.endpoint || 'https://magma.amboss.tech/graphql',
-      logLevel: config?.logLevel || 'error'
+      magmaApiKey: config.apiKey,
+      magmaEndpoint: config.endpoint || 'https://magma.amboss.tech/graphql',
+      logLevel: config.logLevel || 'error'
     };
 
     this.graphqlClient = new MagmaGraphQLClient(fullConfig);
@@ -111,6 +114,6 @@ export class MagmaClient {
     const response = await this.graphqlClient.buyLiquidity(input);
 
     // Return just the invoice string
-    return response.liquidity.buy.payment.lightning_invoice;
+    return response.account.liquidity.buy.payment.lightning_invoice;
   }
 }

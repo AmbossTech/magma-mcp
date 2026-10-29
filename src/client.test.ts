@@ -28,10 +28,10 @@ describe('MagmaClient', () => {
 
   describe('constructor', () => {
     it('should create client with default config', () => {
-      const client = new MagmaClient();
+      const client = new MagmaClient({ apiKey: 'test-key' });
       expect(client).toBeInstanceOf(MagmaClient);
       expect(MagmaGraphQLClient).toHaveBeenCalledWith({
-        magmaApiKey: undefined,
+        magmaApiKey: 'test-key',
         magmaEndpoint: 'https://magma.amboss.tech/graphql',
         logLevel: 'error'
       });
@@ -70,16 +70,18 @@ describe('MagmaClient', () => {
     it('should buy liquidity successfully', async () => {
       const mockInvoice = 'lnbc1000u1p3...';
       const mockResponse = {
-        liquidity: {
-          buy: {
-            payment: {
-              lightning_invoice: mockInvoice
+        account: {
+          liquidity: {
+            buy: {
+              payment: {
+                lightning_invoice: mockInvoice
+              }
             }
           }
         }
       };
 
-      const client = new MagmaClient();
+      const client = new MagmaClient({ apiKey: 'test-key' });
       const mockBuyLiquidity = vi.fn().mockResolvedValue(mockResponse);
       (client as any).graphqlClient.buyLiquidity = mockBuyLiquidity;
 
@@ -103,16 +105,18 @@ describe('MagmaClient', () => {
     it('should buy liquidity with all options', async () => {
       const mockInvoice = 'lnbc500u1p3...';
       const mockResponse = {
-        liquidity: {
-          buy: {
-            payment: {
-              lightning_invoice: mockInvoice
+        account: {
+          liquidity: {
+            buy: {
+              payment: {
+                lightning_invoice: mockInvoice
+              }
             }
           }
         }
       };
 
-      const client = new MagmaClient();
+      const client = new MagmaClient({ apiKey: 'test-key' });
       const mockBuyLiquidity = vi.fn().mockResolvedValue(mockResponse);
       (client as any).graphqlClient.buyLiquidity = mockBuyLiquidity;
 
@@ -137,7 +141,7 @@ describe('MagmaClient', () => {
     });
 
     it('should reject amounts below minimum', async () => {
-      const client = new MagmaClient();
+      const client = new MagmaClient({ apiKey: 'test-key' });
 
       await expect(client.buyLiquidity({
         connectionUri: '03abc...',
@@ -147,16 +151,18 @@ describe('MagmaClient', () => {
 
     it('should convert number to string for usd_cents', async () => {
       const mockResponse = {
-        liquidity: {
-          buy: {
-            payment: {
-              lightning_invoice: 'lnbc...'
+        account: {
+          liquidity: {
+            buy: {
+              payment: {
+                lightning_invoice: 'lnbc...'
+              }
             }
           }
         }
       };
 
-      const client = new MagmaClient();
+      const client = new MagmaClient({ apiKey: 'test-key' });
       const mockBuyLiquidity = vi.fn().mockResolvedValue(mockResponse);
       (client as any).graphqlClient.buyLiquidity = mockBuyLiquidity;
 
@@ -173,7 +179,7 @@ describe('MagmaClient', () => {
     });
 
     it('should propagate GraphQL client errors', async () => {
-      const client = new MagmaClient();
+      const client = new MagmaClient({ apiKey: 'test-key' });
       const mockError = new Error('Network error');
       const mockBuyLiquidity = vi.fn().mockRejectedValue(mockError);
       (client as any).graphqlClient.buyLiquidity = mockBuyLiquidity;

@@ -44,6 +44,8 @@ async function main() {
 
 This tool opens a channel TO your node, giving you receiving capacity. The liquidity purchase requires a minimum of $5.00 (500 cents).
 
+It buys with the configured MAGMA_API_KEY. The account behind it must have accepted the Amboss Terms of Service. If the tool says they are not accepted, tell the user to accept them at https://magma.amboss.tech/settings/account. Never accept them on the user's behalf.
+
 Use this when you need to:
 - Increase your node's inbound liquidity
 - Accept Lightning payments
