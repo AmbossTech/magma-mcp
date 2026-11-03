@@ -65,13 +65,15 @@ export interface MagmaPayment {
  * Note: graphql-request library unwraps the response and returns data directly
  */
 export interface BuyLiquidityResponse {
-  liquidity: {
-    buy: {
-      payment: {
-        lightning_invoice: string;
+  account: {
+    liquidity: {
+      buy: {
+        payment: {
+          lightning_invoice: string;
+        };
       };
     };
-  }
+  };
 }
 
 /**

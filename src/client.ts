@@ -6,12 +6,19 @@
 import { MagmaGraphQLClient } from './lib/graphql-client.js';
 import type { Config } from './config.js';
 
+const MISSING_API_KEY_MESSAGE =
+  'apiKey is required. Use an API key from an Amboss account that has ' +
+  'accepted the Terms of Service at https://magma.amboss.tech/settings/account.';
+
 /**
  * Configuration options for MagmaClient
  */
 export interface MagmaClientConfig {
-  /** Amboss Magma API key (optional for anonymous access) */
-  apiKey?: string;
+  /**
+   * Amboss API key of an account that has accepted the Terms of Service at
+   * https://magma.amboss.tech/settings/account
+   */
+  apiKey: string;
   /** GraphQL endpoint URL (defaults to production) */
   endpoint?: string;
   /** Logging level for client operations */
@@ -59,14 +66,19 @@ export class MagmaClient {
   /**
    * Create a new Magma API client
    *
-   * @param config - Optional configuration for the client
+   * @param config - Configuration for the client
+   * @throws {Error} When `apiKey` is empty
    */
-  constructor(config?: MagmaClientConfig) {
+  constructor(config: MagmaClientConfig) {
+    if (!config.apiKey) {
+      throw new Error(MISSING_API_KEY_MESSAGE);
+    }
+
     // Build Config object with defaults
     const fullConfig: Config = {
-      magmaApiKey: config?.apiKey,
-      magmaEndpoint: config?.endpoint || 'https://magma.amboss.tech/graphql',
-      logLevel: config?.logLevel || 'error'
+      magmaApiKey: config.apiKey,
+      magmaEndpoint: config.endpoint || 'https://magma.amboss.tech/graphql',
+      logLevel: config.logLevel || 'error'
     };
 
     this.graphqlClient = new MagmaGraphQLClient(fullConfig);
@@ -111,6 +123,6 @@ export class MagmaClient {
     const response = await this.graphqlClient.buyLiquidity(input);
 
     // Return just the invoice string
-    return response.liquidity.buy.payment.lightning_invoice;
+    return response.account.liquidity.buy.payment.lightning_invoice;
   }
 }
