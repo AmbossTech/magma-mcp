@@ -375,7 +375,7 @@ ls -la dist/
 
 ### Authentication errors
 
-**Error:** `Authentication failed. Please check your MAGMA_API_KEY ...`
+**Error:** `Unauthorized token`, or `Authentication failed. Please check your MAGMA_API_KEY ...` when the request is rejected with HTTP 401
 
 **Solution:**
 1. Verify the key at https://account.amboss.tech/settings/api-keys

@@ -6,6 +6,10 @@
 import { MagmaGraphQLClient } from './lib/graphql-client.js';
 import type { Config } from './config.js';
 
+const MISSING_API_KEY_MESSAGE =
+  'apiKey is required. Use an API key from an Amboss account that has ' +
+  'accepted the Terms of Service at https://magma.amboss.tech/settings/account.';
+
 /**
  * Configuration options for MagmaClient
  */
@@ -62,9 +66,14 @@ export class MagmaClient {
   /**
    * Create a new Magma API client
    *
-   * @param config - Optional configuration for the client
+   * @param config - Configuration for the client
+   * @throws {Error} When `apiKey` is empty
    */
   constructor(config: MagmaClientConfig) {
+    if (!config.apiKey) {
+      throw new Error(MISSING_API_KEY_MESSAGE);
+    }
+
     // Build Config object with defaults
     const fullConfig: Config = {
       magmaApiKey: config.apiKey,

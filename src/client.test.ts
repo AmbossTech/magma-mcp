@@ -37,6 +37,11 @@ describe('MagmaClient', () => {
       });
     });
 
+    it('should throw when apiKey is empty', () => {
+      expect(() => new MagmaClient({ apiKey: '' })).toThrow('apiKey is required');
+      expect(MagmaGraphQLClient).not.toHaveBeenCalled();
+    });
+
     it('should create client with custom config', () => {
       const client = new MagmaClient({
         apiKey: 'test-key',
