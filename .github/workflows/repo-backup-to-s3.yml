@@ -1,0 +1,11 @@
+name: 📤 Daily Repo Backup to AWS S3
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '15 1 * * *' # Daily 1:15 AM UTC
+
+jobs:
+  call-reusable-backup:
+    uses: AmbossTech/.github/.github/workflows/repo-backup-to-s3.yml@main
+
